@@ -48,13 +48,7 @@ public class GoogleDriveInt {
             Collections.singletonList(DriveScopes.DRIVE);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    /**
-     * Creates an authorized Credential object.
-     *
-     * @param HTTP_TRANSPORT The network HTTP Transport.
-     * @return An authorized Credential object.
-     * @throws IOException If the credentials.json file cannot be found.
-     */
+
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
         // Load client secrets.
@@ -73,7 +67,7 @@ public class GoogleDriveInt {
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-        //returns an authorized Credential object.
+
         return credential;
     }
 
@@ -150,7 +144,7 @@ public class GoogleDriveInt {
             }
         }
 
-//        return fileContent;
+        // return fileContent;
     }
 
 }
