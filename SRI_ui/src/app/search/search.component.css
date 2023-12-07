@@ -1,0 +1,62 @@
+::ng-deep 
+  
+.ngx-pagination {
+    background: red;
+    padding-left: 0px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #FFFFFF!important ;
+    flex-direction: row;
+}
+  .ngx-pagination .current,
+  .btn-info {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #52e782 !important;
+    border: transparent !important;
+    border-radius: 50% !important;
+  }
+  
+  .ngx-pagination .current:hover {
+    color: white;
+    cursor: pointer;
+    background: #17a2b8 !important;
+    border-radius: 20px !important;
+    border: transparent !important;
+  }
+    
+  
+.ngx-pagination .pagination-previous ,
+.ngx-pagination .pagination-previous.disabled {
+  font-family: Popins;
+  color : #17a2b8;
+  content: "\f053" !important;
+  display: inline-block !important;
+  margin-right: 0rem !important;
+  background :blue ;
+}
+
+.ngx-pagination .pagination-next ,
+.ngx-pagination .pagination-next.disabled {
+  font-family: Popins !important;
+  color : white ;
+  content: "\f054" !important;
+  display: inline-block !important;
+  margin-left: 0rem !important;
+  background :blue ;
+
+}
+
+.ngx-pagination .pagination-previous,
+.ngx-pagination .pagination-next {
+    font-family: FontAwesome, Popins; /* Specify both font families */
+    color: white;
+    display: inline-flex; /* Use inline-flex to ensure elements are on the same line */
+    align-items: center; /* Align items vertically in the center */
+}
+
