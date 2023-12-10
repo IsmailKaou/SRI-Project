@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.service.GoogleDriveIntegration;
+import com.example.backend.service.GoogleDrive.GoogleDriveIntegration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
