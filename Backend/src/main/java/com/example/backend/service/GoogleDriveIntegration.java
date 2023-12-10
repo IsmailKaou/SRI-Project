@@ -1,4 +1,4 @@
-package com.example.backend.Service;
+package com.example.backend.service;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -17,15 +17,20 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GoogleDriveInt {
+@Service
+public class GoogleDriveIntegration {
 
     private static String fileContent;
+    static List<String> CVs=new ArrayList<>();
+//    http://localhost:8080/login/oauth2/code/google
 
     /**
      * Application name.
@@ -52,7 +57,7 @@ public class GoogleDriveInt {
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
         // Load client secrets.
-        InputStream in = GoogleDriveInt.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = GoogleDriveIntegration.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
@@ -108,8 +113,9 @@ public class GoogleDriveInt {
     }
 
     public static void googleDriveInt() throws IOException, GeneralSecurityException {
+       // 1bob4VxTmU3WLDZoGCAG_27f-xB_hBXa5
+        String folderId = "1zZKFo3rLREQWYI-P52wxFrNHVPcnpaoD";
 
-        String folderId = "1bob4VxTmU3WLDZoGCAG_27f-xB_hBXa5";
         String query = "'" + folderId + "' in parents";
 
         // Build a new authorized API client service.
@@ -121,7 +127,7 @@ public class GoogleDriveInt {
         // Print the names and IDs for up to 10 files.
         FileList result = service.files().list()
                 .setQ(query)
-                .setPageSize(10)
+//                .setPageSize(10)
                 .setFields("nextPageToken, files(id, name, fileExtension)")
                 .execute();
         List<com.google.api.services.drive.model.File> files = result.getFiles();
@@ -130,6 +136,9 @@ public class GoogleDriveInt {
         } else {
             System.out.println("Files:");
             for (com.google.api.services.drive.model.File file : files) {
+                // Ajouter le nom de fichier dans la liste des cvs
+                CVs.add(file.getName());
+
                 System.out.printf("%s (%s)\n", file.getName(), file.getId(),file.getFileExtension());
 
                 if(file.getFileExtension().equals("pdf")){
@@ -147,4 +156,8 @@ public class GoogleDriveInt {
         // return fileContent;
     }
 
+    public List<String> getCVs(){
+
+        return CVs;
+    }
 }

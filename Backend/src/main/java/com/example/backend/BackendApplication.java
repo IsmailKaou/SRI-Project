@@ -1,6 +1,6 @@
 package com.example.backend;
 
-import com.example.backend.Service.GoogleDriveInt;
+import com.example.backend.service.GoogleDriveIntegration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -14,7 +14,7 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 
 //		System.out.println("Hello world!");
-		GoogleDriveInt.googleDriveInt();
+		GoogleDriveIntegration.googleDriveInt();
 	}
 
 }
