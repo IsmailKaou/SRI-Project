@@ -1,5 +1,6 @@
 package com.example.backend.service.GoogleDrive;
 
+import com.example.backend.model.Resume;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -13,10 +14,13 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.FileList;
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -28,9 +32,8 @@ import java.util.List;
 @Service
 public class GoogleDriveIntegration {
 
-    private static String fileContent;
-    static List<String> CVs=new ArrayList<>();
-//    http://localhost:8080/login/oauth2/code/google
+    @Getter
+    private static List<Resume> CVs=new ArrayList<>();
 
     /**
      * Application name.
@@ -52,7 +55,18 @@ public class GoogleDriveIntegration {
     private static final List<String> SCOPES =
             Collections.singletonList(DriveScopes.DRIVE);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    @Value("${folderId}")
+    static String folderId = "1zZKFo3rLREQWYI-P52wxFrNHVPcnpaoD";
 
+    static Drive service;
+    static NetHttpTransport HTTP_TRANSPORT;
+
+    private static List<com.google.api.services.drive.model.File> files;
+    @PostConstruct
+    public void init() throws GeneralSecurityException, IOException {
+        // Your custom initialization logic here
+       GoogleDriveIntegration.googleDriveInt();
+    }
 
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
@@ -114,13 +128,13 @@ public class GoogleDriveIntegration {
 
     public static void googleDriveInt() throws IOException, GeneralSecurityException {
        // 1bob4VxTmU3WLDZoGCAG_27f-xB_hBXa5
-        String folderId = "1zZKFo3rLREQWYI-P52wxFrNHVPcnpaoD";
+
 
         String query = "'" + folderId + "' in parents";
 
         // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
@@ -130,16 +144,29 @@ public class GoogleDriveIntegration {
 //                .setPageSize(10)
                 .setFields("nextPageToken, files(id, name, fileExtension)")
                 .execute();
-        List<com.google.api.services.drive.model.File> files = result.getFiles();
+        files = result.getFiles();
         if (files == null || files.isEmpty()) {
             System.out.println("No files found.");
         } else {
             System.out.println("Files:");
             for (com.google.api.services.drive.model.File file : files) {
-                // Ajouter le nom de fichier dans la liste des cvs
-                CVs.add(file.getName());
 
-                System.out.printf("%s (%s)\n", file.getName(), file.getId(),file.getFileExtension());
+                // Ajouter le nom de fichier dans la liste des cvs
+                CVs.add(new Resume(file.getId(),file.getName(),"https://drive.google.com/file/d/"+file.getId()+"/view"));
+
+                System.out.printf("%s (%s) %s %s \n", file.getName(), file.getId(),file.getFileExtension(),"https://drive.google.com/file/d/"+file.getId()+"/view");
+
+            }
+        }
+    }
+
+    public static void extractCVsContent() throws IOException {
+        String fileContent="";
+        CVs=new ArrayList<>();
+        for (com.google.api.services.drive.model.File file : files) {
+
+
+            System.out.printf("%s (%s) %s %s \n", file.getName(), file.getId(),file.getFileExtension(),"https://drive.google.com/file/d/"+file.getId()+"/view");
 
                 if(file.getFileExtension().equals("pdf")){
                     fileContent = getPdfContent(service,file.getId());
@@ -150,14 +177,11 @@ public class GoogleDriveIntegration {
                 } else {
                     System.out.println("File type not supported");
                 }
-            }
+            // Ajouter le nom de fichier dans la liste des cvs
+            CVs.add(new Resume(file.getId(),file.getName(),fileContent,"https://drive.google.com/file/d/"+file.getId()+"/view"));
+
+        }
         }
 
-        // return fileContent;
-    }
 
-    public List<String> getCVs(){
-
-        return CVs;
-    }
 }

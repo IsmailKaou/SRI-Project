@@ -11,6 +11,6 @@ import java.util.List;
 public class ResumeQuery {
 
     private String find;
-    private List<String> industries;
+//    private List<String> industries;
 
 }

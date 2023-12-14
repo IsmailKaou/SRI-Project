@@ -94,14 +94,14 @@ public class ResumeIndexer {
         doc.add(content);
 
         // Add industries and facets to the document
-        for (String industry : resume.getIndustries()) {
-            if (industry != null && !industry.isEmpty()) {
-                IndexableField industriesFacets = new SortedSetDocValuesFacetField(INDUSTRIES, industry);
-                IndexableField industries = new TextField(INDUSTRIES, industry, Field.Store.YES);
-                doc.add(industriesFacets);
-                doc.add(industries);
-            }
-        }
+//        for (String industry : resume.getIndustries()) {
+//            if (industry != null && !industry.isEmpty()) {
+//                IndexableField industriesFacets = new SortedSetDocValuesFacetField(INDUSTRIES, industry);
+//                IndexableField industries = new TextField(INDUSTRIES, industry, Field.Store.YES);
+//                doc.add(industriesFacets);
+//                doc.add(industries);
+//            }
+//        }
 
         // Build the document using the facets configuration
         return facetsConfig.build(doc);

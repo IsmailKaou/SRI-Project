@@ -85,14 +85,14 @@ public class ResumeSearcher {
     // Search for documents with facets
     public Object searchDocumentsWithFacets(ResumeQuery resumeQuery) throws IOException {
         BooleanQuery.Builder buildQuery = buildQuery(resumeQuery);
-
-        if (resumeQuery.getIndustries() != null && !resumeQuery.getIndustries().isEmpty()) {
-            DrillDownQuery drillDownQuery = new DrillDownQuery(ResumeIndexer.facetsConfig);
-            for (String g : resumeQuery.getIndustries()) {
-                drillDownQuery.add(ResumeIndexer.INDUSTRIES, g);
-            }
-            buildQuery.add(drillDownQuery, BooleanClause.Occur.FILTER);
-        }
+//
+//        if (resumeQuery.getIndustries() != null && !resumeQuery.getIndustries().isEmpty()) {
+//            DrillDownQuery drillDownQuery = new DrillDownQuery(ResumeIndexer.facetsConfig);
+//            for (String g : resumeQuery.getIndustries()) {
+//                drillDownQuery.add(ResumeIndexer.INDUSTRIES, g);
+//            }
+//            buildQuery.add(drillDownQuery, BooleanClause.Occur.FILTER);
+//        }
 
         Query query = buildQuery.build();
 
@@ -165,10 +165,10 @@ public class ResumeSearcher {
     // Extract resume information from a Lucene document
     private Resume getResume(Document document) {
         Resume resume = new Resume();
-        resume.setId(Integer.parseInt(document.get(ResumeIndexer.ID)));
+        resume.setId(document.get(ResumeIndexer.ID));
         resume.setTitle(document.get(ResumeIndexer.TITLE));
         resume.setLink(document.get(ResumeIndexer.LINK));
-        resume.setIndustries(Arrays.asList(document.getValues(ResumeIndexer.INDUSTRIES)));
+       // resume.setIndustries(Arrays.asList(document.getValues(ResumeIndexer.INDUSTRIES)));
         resume.setContent(document.get(ResumeIndexer.CONTENT));
         return resume;
     }

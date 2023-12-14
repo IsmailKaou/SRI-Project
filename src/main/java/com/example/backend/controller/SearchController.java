@@ -5,6 +5,8 @@ import com.example.backend.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 @RestController
@@ -21,7 +23,7 @@ public class SearchController {
 
     // Endpoint to search for documents using Lucene
     @PostMapping("/lucene")
-    public Object findInLucene(@RequestBody ResumeQuery resumeQuery) {
+    public Object findInLucene(@RequestBody ResumeQuery resumeQuery) throws GeneralSecurityException, IOException {
         System.out.println(resumeQuery);
 
         // Check if the incoming resumeQuery is null

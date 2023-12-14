@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.Resume;
 import com.example.backend.service.GoogleDrive.GoogleDriveIntegration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,13 @@ import java.util.List;
 @CrossOrigin(originPatterns = "*")
 @RequestMapping("/api/v1/files")
 public class DocumentProviderController {
+
+
     @Autowired
     GoogleDriveIntegration googleDriveIntegration;
 
     @GetMapping
-    public ResponseEntity<List<String>> getCVs(){
+    public ResponseEntity<List<Resume>> getCVs(){
 
         return ResponseEntity.ok(googleDriveIntegration.getCVs());
     }

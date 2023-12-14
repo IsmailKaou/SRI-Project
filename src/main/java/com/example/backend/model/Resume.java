@@ -6,13 +6,27 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Data
 public class Resume {
-    private int id;
+    private String id;
     private String title;
     private String link;
     private String content;
-    private List<String> industries;
+  //  private List<String> industries;
+
+    public Resume(String id,String title,String content, String link){
+        this.id=id;
+        this.title=title;
+        this.content=content;
+        this.link=link;
+    }
+
+
+    public Resume(String id, String title, String link) {
+        this.id=id;
+        this.title=title;
+        this.link=link;
+    }
 }
