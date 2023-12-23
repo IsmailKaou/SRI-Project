@@ -152,7 +152,7 @@ public class GoogleDriveIntegration {
             for (com.google.api.services.drive.model.File file : files) {
 
                 // Ajouter le nom de fichier dans la liste des cvs
-                CVs.add(new Resume(file.getId(),file.getName(),"https://drive.google.com/file/d/"+file.getId()+"/view"));
+                CVs.add(new Resume(file.getId(),file.getName(),"https://drive.google.com/file/d/"+file.getId()+"/view",file.getFileExtension()));
 
                 System.out.printf("%s (%s) %s %s \n", file.getName(), file.getId(),file.getFileExtension(),"https://drive.google.com/file/d/"+file.getId()+"/view");
 
