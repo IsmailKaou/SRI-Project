@@ -1,18 +1,22 @@
 import { Component ,ViewEncapsulation } from '@angular/core';
 import { FileService } from '../file.service';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css'],
-  encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None,
+
 
 })
 export class SearchComponent {
 
 
   docs = new Array<any>();
+  wordToSearch : string =''
+  isLoading: boolean = true;
 
   constructor(public fileService: FileService) { }
 
@@ -20,13 +24,20 @@ export class SearchComponent {
    this.getFileData();
   }
   getFileData() {
+    this.isLoading = true;
+
     this.fileService.getFiles().subscribe(
       (data) => {
         // Handle the file data here
         this.docs=data
         console.log('Files:', data);
+        this.isLoading = false;
+
       },
       (error) => {
+        this.isLoading = false;
+
+
         console.error('Error fetching files:', error);
       }
     );
@@ -51,6 +62,25 @@ export class SearchComponent {
   }
 
   onSearch() {
+    const findValue =this.wordToSearch; 
+    console.log("the word to search is "+findValue)
+    this.isLoading = true;
+
+    this.fileService.searchFiles(findValue).subscribe(
+      (response) => {
+        // handle the response here
+        this.docs=response
+        console.log('Search Result:', response);
+        this.isLoading = false;
+
+      },
+      (error) => {
+        // handle errors here
+        this.isLoading = false;
+
+        console.error('Error in search:', error);
+      }
+    );
    
     this.clicked = true ;
     console.log('button',this.clicked)
@@ -68,6 +98,5 @@ export class SearchComponent {
     emploi : 'premier emploi'
   }]
 
- 
 
 }

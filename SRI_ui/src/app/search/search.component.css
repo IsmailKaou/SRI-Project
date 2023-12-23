@@ -60,3 +60,11 @@
     align-items: center; /* Align items vertically in the center */
 }
 
+.loading-container {
+  display: flex;
+  position: relative;
+  left: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 15vh; /* You can adjust this based on your layout requirements */
+}
