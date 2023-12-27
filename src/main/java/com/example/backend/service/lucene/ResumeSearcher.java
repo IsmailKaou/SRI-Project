@@ -54,7 +54,7 @@ public class ResumeSearcher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(result);
+        //System.out.println(result);
         return result;
     }
 
@@ -64,7 +64,7 @@ public class ResumeSearcher {
         System.out.println("Lucene Query: " + query.toString());
         TopDocs result = searcher.search(query, limit);
         if (result.totalHits.value == 0) {
-            System.out.println("No documents found");
+            //System.out.println("No documents found");
             return new ArrayList<>();
         }
 
@@ -85,14 +85,7 @@ public class ResumeSearcher {
     // Search for documents with facets
     public Object searchDocumentsWithFacets(ResumeQuery resumeQuery) throws IOException {
         BooleanQuery.Builder buildQuery = buildQuery(resumeQuery);
-//
-//        if (resumeQuery.getIndustries() != null && !resumeQuery.getIndustries().isEmpty()) {
-//            DrillDownQuery drillDownQuery = new DrillDownQuery(ResumeIndexer.facetsConfig);
-//            for (String g : resumeQuery.getIndustries()) {
-//                drillDownQuery.add(ResumeIndexer.INDUSTRIES, g);
-//            }
-//            buildQuery.add(drillDownQuery, BooleanClause.Occur.FILTER);
-//        }
+
 
         Query query = buildQuery.build();
 
@@ -170,6 +163,7 @@ public class ResumeSearcher {
         resume.setLink(document.get(ResumeIndexer.LINK));
        // resume.setIndustries(Arrays.asList(document.getValues(ResumeIndexer.INDUSTRIES)));
         resume.setContent(document.get(ResumeIndexer.CONTENT));
+        resume.setExtension(document.get(ResumeIndexer.EXTENSION));
         return resume;
     }
 }

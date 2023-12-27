@@ -33,33 +33,14 @@ public class SearchService {
 
 
     @Value("${lucene.dir.path}")
-    public static  String PATH="/Users/fatima-zahra/Desktop/SRI" ;
+    public static  String PATH="/Users/ikaou/Desktop/SRI" ;
     private static final List<String> industries = Arrays.asList("Technology", "Finance", "Healthcare", "Education", "Engineering");
 
     public static final String LUCENE_SERVICE = "IndexingService";
     private final SearchFactory searchFactory;
 
     private static boolean HasIndexationBeenDone=false;
-    // Helper method to get a random sublist from a list
-//    private static List<String> getRandomSublist(List<String> list, int size, Random random) {
-//        List<String> shuffled = new ArrayList<>(list);
-//        java.util.Collections.shuffle(shuffled, random);
-//        return shuffled.subList(0, size);
-//    }
 
-   //  Create dummy resumes with random industries
-//    public static List<Resume> createDummyResumes(int numResumes) {
-//        List<Resume> resumes = new ArrayList<>();
-//        Random random = new Random();
-//
-//        for (int i = 1; i <= numResumes; i++) {
-//            List<String> randomIndustries = getRandomSublist(industries, random.nextInt(industries.size()) + 1, random);
-//            resumes.add(new Resume("i", "Resume Title " + i, "https://example.com/resume" + i + ".pdf",
-//                    "This is the content of Resume " + i + ".", randomIndustries));
-//        }
-//
-//        return resumes;
-//    }
 
     // Clear the Lucene index
     public void clearIndex() throws IOException {
@@ -77,13 +58,16 @@ public class SearchService {
 
         try {
 
-            GoogleDriveIntegration.extractCVsContent();
+            List<Resume> resumes=GoogleDriveIntegration.extractCVsContent();
             clearIndex();
-       //     List<Resume> dummyResumes = createDummyResumes(10);
-            List<Resume> resumes= GoogleDriveIntegration.getCVs();
-        // System.out.println("the resumes are "+GoogleDriveIntegration.getCVs());
+
+            for (Resume r: resumes
+                 ) {
+                System.out.println("here is the content : test : +" +r.getContent());
+            }
+
             ResumeIndexer resumeIndexer = new ResumeIndexer(PATH);
-            resumeIndexer.index(resumes);
+            resumeIndexer.indexResumes(resumes);
         }
         catch (IOException ioException) {
             System.out.println(ioException.getMessage());

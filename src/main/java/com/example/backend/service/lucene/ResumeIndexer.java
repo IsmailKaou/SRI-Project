@@ -15,6 +15,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.poi.hssf.record.formula.functions.Index;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ public class ResumeIndexer {
     public final static String LINK = "link";
     public final static String CONTENT = "content";
     public final static String INDUSTRIES = "industries";
+    public final static String EXTENSION = "extension";
     public static FacetsConfig facetsConfig = new FacetsConfig();
     private final Path path;
     static {
@@ -40,7 +42,7 @@ public class ResumeIndexer {
     }
 
     // Index a list of resumes into the Lucene index
-    public void index(List<Resume> resumes) throws IOException {
+    public void indexResumes(List<Resume> resumes) throws IOException {
         Directory dir = FSDirectory.open(path);
 
         Analyzer analyzer = new StandardAnalyzer();
@@ -80,28 +82,24 @@ public class ResumeIndexer {
 
     // Create a Lucene Document from a Resume object
     private Document createDocument(Resume resume) throws IOException {
-        System.out.println(resume.getId());
+        System.out.println("content "+resume.getContent());
 
         IndexableField id = new StoredField(ID, String.valueOf(resume.getId()));
         IndexableField title = new TextField(TITLE, resume.getTitle(), Field.Store.YES);
         IndexableField link = new StoredField(LINK, resume.getLink());
+
         IndexableField content = new TextField(CONTENT, resume.getContent(), Field.Store.YES);
+        IndexableField extension = new TextField(EXTENSION, resume.getExtension(), Field.Store.YES);
+        System.out.println("------------------------------------------------------------------");
+        System.out.println("------------------------------------------" +resume.getExtension()+"------------------------");
 
         Document doc = new Document();
         doc.add(id);
         doc.add(title);
         doc.add(link);
         doc.add(content);
+        doc.add(extension);
 
-        // Add industries and facets to the document
-//        for (String industry : resume.getIndustries()) {
-//            if (industry != null && !industry.isEmpty()) {
-//                IndexableField industriesFacets = new SortedSetDocValuesFacetField(INDUSTRIES, industry);
-//                IndexableField industries = new TextField(INDUSTRIES, industry, Field.Store.YES);
-//                doc.add(industriesFacets);
-//                doc.add(industries);
-//            }
-//        }
 
         // Build the document using the facets configuration
         return facetsConfig.build(doc);

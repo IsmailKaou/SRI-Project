@@ -100,8 +100,7 @@ public class GoogleDriveIntegration {
             PDDocument document = PDDocument.load(outputStream.toByteArray());
             PDFTextStripper pdfStripper = new PDFTextStripper();
             String text = pdfStripper.getText(document);
-            System.out.println("Extracted text:");
-            System.out.println(text);
+
 
             document.close();
             return text;
@@ -111,7 +110,8 @@ public class GoogleDriveIntegration {
         }
     }
 
-    private static void getDocxContent(Drive service, String fileId) {
+    private static String getDocxContent(Drive service, String fileId) {
+        System.out.println("im in docx extractor");
         XWPFWordExtractor extractor = null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -120,7 +120,8 @@ public class GoogleDriveIntegration {
             XWPFDocument document = new XWPFDocument(new ByteArrayInputStream(outputStream.toByteArray()));
             extractor = new XWPFWordExtractor(document);
             String fileData = extractor.getText();
-            System.out.println(fileData);
+            //System.out.println(fileData);
+            return  fileData;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -129,7 +130,7 @@ public class GoogleDriveIntegration {
     public static void googleDriveInt() throws IOException, GeneralSecurityException {
        // 1bob4VxTmU3WLDZoGCAG_27f-xB_hBXa5
 
-
+        String fileContent="";
         String query = "'" + folderId + "' in parents";
 
         // Build a new authorized API client service.
@@ -145,22 +146,24 @@ public class GoogleDriveIntegration {
                 .setFields("nextPageToken, files(id, name, fileExtension)")
                 .execute();
         files = result.getFiles();
+
         if (files == null || files.isEmpty()) {
             System.out.println("No files found.");
         } else {
             System.out.println("Files:");
             for (com.google.api.services.drive.model.File file : files) {
 
+
                 // Ajouter le nom de fichier dans la liste des cvs
                 CVs.add(new Resume(file.getId(),file.getName(),"https://drive.google.com/file/d/"+file.getId()+"/view",file.getFileExtension()));
 
-                System.out.printf("%s (%s) %s %s \n", file.getName(), file.getId(),file.getFileExtension(),"https://drive.google.com/file/d/"+file.getId()+"/view");
+                System.out.printf("file name:%s (%s) extension%s %s \n", file.getName(), file.getId(),file.getFileExtension(),"https://drive.google.com/file/d/"+file.getId()+"/view");
 
             }
         }
     }
 
-    public static void extractCVsContent() throws IOException {
+    public static List<Resume> extractCVsContent() throws IOException {
         String fileContent="";
         CVs=new ArrayList<>();
         for (com.google.api.services.drive.model.File file : files) {
@@ -170,18 +173,21 @@ public class GoogleDriveIntegration {
 
                 if(file.getFileExtension().equals("pdf")){
                     fileContent = getPdfContent(service,file.getId());
-                    System.out.println("File Content:");
+                    System.out.println("PDF File Content:");
                     System.out.println(fileContent);
                 } else if (file.getFileExtension().equals("docx") || file.getFileExtension().equals("doc")){
-                    getDocxContent(service,file.getId());
+                    fileContent = getDocxContent(service,file.getId());
+                    System.out.println("DOCX File Content:");
+                    System.out.println(fileContent);
                 } else {
                     System.out.println("File type not supported");
                 }
-            // Ajouter le nom de fichier dans la liste des cvs
-            CVs.add(new Resume(file.getId(),file.getName(),fileContent,"https://drive.google.com/file/d/"+file.getId()+"/view"));
 
+            // Ajouter les fichier dans la liste des cvs
+            CVs.add(new Resume(file.getId(),file.getName(),fileContent,file.getFileExtension(),"https://drive.google.com/file/d/"+file.getId()+"/view"));
         }
-        }
+        return CVs;
+    }
 
 
 }
